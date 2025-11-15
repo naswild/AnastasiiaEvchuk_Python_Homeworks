@@ -25,8 +25,7 @@ class AuthorizationApi:
             "companyId": company_id
         }
         resp = requests.post(self.url + self.GET_KEYS_ENDPOINT, json=credentials)
-        json = resp.json()
-        if json[0] is not None:
+        if resp.json()[0] is not None:
             return (resp.json()[0] or [{}]).get("key")
         resp = requests.post(self.url + self.CREATE_KEY_ENDPOINT, json=credentials)
         return resp.json()["key"]
