@@ -19,9 +19,10 @@ password = os.getenv("PASSWORD")
 def test_create_project():
     token = authorization.get_key(login, password)
     resp = projects.create_project(TITLE, token)
-
+    project_id = resp.json().get("id")
     assert resp.status_code == 201
-    assert resp.json()["id"] is not None
+    assert project_id is not None
+    assert project_id != ""
 
 @pytest.mark.yougile_negative_test_create_project
 def test_create_project_with_invalid_token():
@@ -29,9 +30,9 @@ def test_create_project_with_invalid_token():
     resp = projects.create_project(TITLE, token)
 
     assert resp.status_code == 401
-    assert resp.json()["statusCode"] == 401
-    assert resp.json()["message"] == "Unauthorized"
-    assert resp.json()["error"] == "Unauthorized"
+    assert resp.json().get("statusCode") == 401
+    assert resp.json().get("message") == "Unauthorized"
+    assert resp.json().get("error") == "Unauthorized"
 
 @pytest.mark.yougile_positive_test_get_project
 def test_get_project():
@@ -41,9 +42,9 @@ def test_get_project():
     resp = projects.get_project_information(project_id, token)
 
     assert resp.status_code == 200
-    assert resp.json()["title"] == TITLE
-    assert resp.json()["timestamp"] is not None
-    assert resp.json()["id"] == project_id
+    assert resp.json().get("title") == TITLE
+    assert resp.json().get("timestamp") is not None
+    assert resp.json().get("id") == project_id
 
 @pytest.mark.yougile_negative_test_get_project
 def test_get_project_with_invalid_project_id():
@@ -52,9 +53,9 @@ def test_get_project_with_invalid_project_id():
     resp = projects.get_project_information(project_id, token)
 
     assert resp.status_code == 404
-    assert resp.json()["statusCode"] == 404
-    assert resp.json()["message"] == "Проект не найден"
-    assert resp.json()["error"] == "Not Found"
+    assert resp.json().get("statusCode") == 404
+    assert resp.json().get("message") == "Проект не найден"
+    assert resp.json().get("error") == "Not Found"
 
 @pytest.mark.yougile_positive_test_change_project
 def test_change_project():
@@ -64,7 +65,7 @@ def test_change_project():
     resp = projects.change_project_title(token, NEW_TITLE, project_id)
 
     assert resp.status_code == 200
-    assert resp.json()["id"] == project_id
+    assert resp.json().get("id") == project_id
 
 @pytest.mark.yougile_negative_test_change_project
 def test_change_project_with_invalid_project_id():
@@ -73,6 +74,6 @@ def test_change_project_with_invalid_project_id():
     resp = projects.change_project_title(token, NEW_TITLE, project_id)
 
     assert resp.status_code == 404
-    assert resp.json()["statusCode"] == 404
-    assert resp.json()["message"] == "Проект не найден"
-    assert resp.json()["error"] == "Not Found"
+    assert resp.json().get("statusCode") == 404
+    assert resp.json().get("message") == "Проект не найден"
+    assert resp.json().get("error") == "Not Found"

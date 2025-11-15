@@ -20,7 +20,7 @@ class ProjectsApi:
         return resp
 
     def get_project_id(self, project):
-        return project.json()["id"]
+        return project.json().get("id")
 
     def get_project_information(self, project_id, token):
         my_headers = {

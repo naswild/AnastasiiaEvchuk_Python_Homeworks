@@ -15,7 +15,7 @@ class AuthorizationApi:
             "password": password
         }
         resp = requests.post(self.url + self.GET_COMPANY_ENDPOINT, json=credentials)
-        return resp.json()["content"][0]["id"]
+        return resp.json().get("content", [{}])[0].get("id")
 
     def get_key(self, login, password):
         company_id = self.get_company_id(login, password)
@@ -25,7 +25,8 @@ class AuthorizationApi:
             "companyId": company_id
         }
         resp = requests.post(self.url + self.GET_KEYS_ENDPOINT, json=credentials)
-        if resp.json()[0] is not None:
-            return resp.json()[0]["key"]
+        json = resp.json()
+        if json[0] is not None:
+            return (resp.json()[0] or [{}]).get("key")
         resp = requests.post(self.url + self.CREATE_KEY_ENDPOINT, json=credentials)
         return resp.json()["key"]
